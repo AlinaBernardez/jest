@@ -6,27 +6,22 @@ function resetProducts() {
     id = 0;
 };
 
+function findingProduct(arr, param) {
+    return arr.find(item => item.param == param)
+};
+
 function addProduct(name, price) {
+    let found = findingProduct(name)
     if(!name || !price) {
         throw new Error('Name and price required')
     }
-    if(products.length > 0) {
-        products.map(product => {
-            if(product.name == name) {
-                throw new Error('This product already exists')
-            }
-            let newProduct = {'name': name, 'price': price, 'id': id}
-            id++
-            products.push(newProduct)
-            return products
-        })
+    if(found) {
+        throw new Error('This product already exists')
     }
-    else if(products.length == 0) {
-        let newProduct = {'name': name, 'price': price, 'id': id}
-        id++
-        products.push(newProduct)
-        return products
-    }
+    let newProduct = {'name': name, 'price': price, 'id': id}
+    id++
+    products.push(newProduct)
+    return newProduct
 };
 
 function removeProduct(id) {
@@ -37,7 +32,8 @@ function removeProduct(id) {
         if(!products.find(item => item.id == id)) {
             throw new Error ('No such ID found')
         }
-        products.splice(id, 1)
+        products = products.filter(product => product.id !== id)
+        return 'Product deleted!'
     }
 };
 
@@ -45,11 +41,11 @@ function getProducts() {
     if(products.length == 0) {
         throw new Error ('Product list is empty!')
     }
-    console.log(products)
+    return products
 };
 
 function getProduct(id) {
-    let check = products.find(item => item.id == id)
+    let check = findingProduct(id)
     if(products.length == 0) {
         throw new Error ('No products available')
     }
@@ -58,25 +54,25 @@ function getProduct(id) {
             throw new Error ('No such ID product found')
         }
         if(check) {
-            let search = products.filter(prod => prod.id == id)
-            return search
+            return check
         }
     }
 };
 
 function updateProduct(id, name, price) {
+    let check = findingProduct(id)
     if(products.length == 0) {
         throw new Error ('Products list empty!')
     }
-    if(!products.find(item => item.id == id)) {
+    if(!name && !price) {
+        throw new Error('Name or price required')
+    }
+    if(!check) {
         throw new Error ('No product found')
     }
-    products.map(product => {
-        if(product.id == id) {
-            product.name = name
-            product.price = price
-        }
-    })
+    if(name) check.name = name
+    if(price) check.price = price
+    return check
 };
 
 module.exports = {

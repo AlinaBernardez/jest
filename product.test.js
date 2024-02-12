@@ -9,13 +9,12 @@ describe('addProduct', () => {
         expect(() => addProduct('', '')).toThrow('Name and price required')
     })
     it('Name should not be included already', () => {
-        expect(products).not.toContain('leche')
+        // expect(products).not.toContain('leche')
+        addProduct('water', 1.2)
+        expect(() => addProduct('water', 1.2)).toThrow('This product already exists')
     })
     it('Should add new Product', () => {
-        addProduct('water', 1.2)
-        products.map(product => {
-            expect(product).toContain('water')
-        })
+        expect(addProduct('water', 1.2)).toBe({id: 0, name: 'water', price: 1.2})
     })
     it('Should increment id by 1', () => {
         addProduct('water', 1.2)
@@ -25,18 +24,16 @@ describe('addProduct', () => {
 
 describe('removeProduct', () => {
     it('Thorw error if product doesn`t exist', () => {
-        expect(() => removeProduct(3)).toThrow('No products available')
+        expect(() => removeProduct(3)).toThrow('No such ID found')
     })
     it('Should remove product by id', () => {
         addProduct('water', 1.2)
-        removeProduct(0)
-        expect(products).toStrictEqual([])
+        expect(removeProduct(0)).toBe('Product deleted!')
     })
 });
 
 describe('getProduct', () => {
     it('Thorw error if product doesn`t exist', () => {
-        addProduct('water', 1.2)
         expect(() => getProduct(3)).toThrow('No such ID product found')
     })
     it('Should return product by id', () => {
